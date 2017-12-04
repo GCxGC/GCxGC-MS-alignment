@@ -45,6 +45,14 @@ function [Peaks_Other_est] = Find_Peaks_Other(Other,Peaks_Ref,PlotVar,lm1,lm2,lm
 % Other (might not be correct in some cases, a verification is
 % recommended). The alignment points positions are in the same order as in
 % Peaks_Ref.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+% See license terms stated in LICENSE.txt
+% Authors : Jonas Gros, and J. Samuel Arey.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
 
 % Set default values (if not defined by the user):
 if nargin<7

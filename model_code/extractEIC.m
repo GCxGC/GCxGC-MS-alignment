@@ -2,6 +2,14 @@ function [EIC_2D] = extractEIC(MSvaluebox,MSintbox,NbPix2ndD,MStotint,Low_value,
 
 % ExtractsEIC with m/z between Low_value and High_value. PlotVar = 1
 % generates a plot (if=0, then no plot displayed)
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+% See license terms stated in LICENSE.txt
+% Authors : Jonas Gros, Yasuyuki Zushi, and J. Samuel Arey.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
 
 %  Low_value=337.87;
 %     High_value=337.97;

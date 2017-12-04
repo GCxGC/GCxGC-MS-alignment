@@ -11,6 +11,14 @@
 % (Before was searching a rectangle, leading to errors when the rectangle
 % extended outside the searching space. Now the rectangle stops at the
 % edges of the chromatogram).
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+% See license terms stated in LICENSE.txt
+% Authors : Jonas Gros, and J. Samuel Arey.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
 
 function [x,y,z] = localmax(Z,xg,yg,m,n)
 

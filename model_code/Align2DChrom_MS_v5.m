@@ -20,6 +20,14 @@ function [AlignedMSvaluebox,AlignedMSintbox,Alignedeachscannum,Alignedmedionid,A
 % MSvaluebox: it is the MS ions m/z value.
 % MSintbox: it is the corresponding intensity value.
 % NbPix2ndD: it is the number of pixels per 2nd column.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+% See license terms stated in LICENSE.txt
+% Authors : Jonas Gros, Yasuyuki Zushi, and J. Samuel Arey.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
 
 % First, if ever the user used some options, give their values to the
 % corresponding variables - It is just the same options as in the non-MS
@@ -38,6 +46,8 @@ for i=1:2:length(varargin)
         Peak_widths=varargin{i+1};
         elseif strcmpi(varargin{i},'InterPixelInterpMeth')
         InterPixelInterpMeth=varargin{i+1};
+    elseif strcmpi(varargin{i},'model_choice')
+        model_choice=varargin{i+1};
     else
         error(['The option ''' varargin{i} ''' is unknown'])
     end
@@ -68,7 +78,8 @@ end
 
 % If InterPixelInterpMeth was not given, set it to cubic:
 if ~exist('InterPixelInterpMeth','var')
-InterPixelInterpMeth='cubic';
+%InterPixelInterpMeth='cubic';
+InterPixelInterpMeth='linear';
 end
 
 % We don't want to plot each ion chromatogram:
@@ -79,10 +90,19 @@ Aligned=zeros(size(Other));
 
 % First alignment (using the normal non-MS code):
 tic % tic - toc, measures time elapsed
+if strcmpi(model_choice,'normal')
 [Aligned1,Displacement,Deform_output]=alignChromato(Ref,...
     squeeze(Other),Peaks_Ref,Peaks_Other,...
     'DisplacementInterpMeth',Interp_meth,'PowerFactor',PowerFactor,...
     'Peak_widths',Peak_widths,'InterPixelInterpMeth',InterPixelInterpMeth);
+elseif strcmpi(model_choice,'DualSibson')
+    [Aligned1,Displacement,Deform_output]=alignChromato_with_SibsonInterp_aslo_1stD(Ref,...
+    squeeze(Other),Peaks_Ref,Peaks_Other,...
+    'DisplacementInterpMeth',Interp_meth,'PowerFactor',PowerFactor,...
+    'Peak_widths',Peak_widths,'InterPixelInterpMeth',InterPixelInterpMeth);
+else
+    error('unknown ''model_choice'' parameter value. Please choose either ''normal'' or ''DualSibson''') 
+end
 Aligned(:,:)=Aligned1;
 disp('1st alignment in:')
 toc

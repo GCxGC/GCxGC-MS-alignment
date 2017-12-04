@@ -1,5 +1,16 @@
 function [Chromato] = matlab_cdf_open_function(FileName, Intthreshold,driftMS)
 
+% Function to open a cdf file containing a MS chromatogram. The output is
+% a structure.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+% See license terms stated in LICENSE.txt
+% Authors : Jonas Gros, Yasuyuki Zushi, and J. Samuel Arey.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+
 cdf.dat1 = netcdf.open(FileName,'NOWRITE');
 
 varidflag = netcdf.inqVarID(cdf.dat1,'flag_count');

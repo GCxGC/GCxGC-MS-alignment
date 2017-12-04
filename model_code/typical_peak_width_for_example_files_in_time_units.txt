@@ -1,0 +1,1 @@
+typical_peak_width = [7.134527548, 0.2522391534]; % time units

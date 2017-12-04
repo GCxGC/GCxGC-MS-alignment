@@ -1,4 +1,6 @@
 function [rttime] = Pix2Time(rtpix,Mod,Freq,isot,varargin)
+
+% Converts retention times in unitys of pixels to units of time.
 % From rtpix a retention vector (in pixels), a point per line 
 % (output in (s;min), input in (pixel;pixel) (with first value at (1;1)
 % BEWARE, this is not the same as GC Image-way I believe.)

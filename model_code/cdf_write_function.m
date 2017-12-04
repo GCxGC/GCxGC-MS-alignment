@@ -1,5 +1,15 @@
 function  [] = cdf_write_function(FileName,Alignedscantime,AlignedMSintboxLine,Alignedflag,Alignedscannum,Alignedmedmsmax,Alignedmedmsmin,Alignedionid,Alignedeachscannum,AlignedMStotint,AlignedMSvalueboxLine)
 
+% Function to write a MS chromatogram to a cdf file.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+% See license terms stated in LICENSE.txt
+% Authors : Jonas Gros, Yasuyuki Zushi, and J. Samuel Arey.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+
 ncnew = netcdf.create( FileName,'64BIT_OFFSET'  );
 
 

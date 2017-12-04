@@ -1,4 +1,6 @@
 function [rtpix] = Time2Pix(rttime,Mod,Freq,isot)
+
+% COnverts retention times from units of time to units of pixels.
 % From rtpix a retention vector (in times), a point per line 
 % (input in (s;min), output in (pixel;pixel) (with first value at (1;1))
 % Mod is modulation rate, in [s], Freq is sampling frequency, in [Hz], isot

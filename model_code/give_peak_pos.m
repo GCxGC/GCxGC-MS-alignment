@@ -12,6 +12,14 @@ function [Peak_Pos] = give_peak_pos(Chromato,varargin)
 % - the option 'EXPL', if it is the string 'shut-up' will avoid the display
 % in matlab command window of the explanations about how to use the code
 % (usefull when you have understood how it works...)
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+% See license terms stated in LICENSE.txt
+% Authors : Jonas Gros, and J. Samuel Arey.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
 
 for i=1:2:length(varargin)
     if strcmpi(varargin{i},'EXPL')

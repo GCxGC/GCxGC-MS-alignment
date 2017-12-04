@@ -17,7 +17,7 @@
 
 % A few error checks:
 if ~exist(['../',input_path,Target_chromatogram_file],'file')
-    error(['Target chromatogram file (',['../users/input/',Weathered_chromatogram_file],' ) does not exist.'])
+    error(['Target chromatogram file (',['../users/input/',Target_chromatogram_file],' ) does not exist.'])
 end
 if ~exist(['../',input_path,Reference_chromatogram_file],'file')
     error(['Reference chromatogram file (',['../users/input/',Reference_chromatogram_file],' ) does not exist.'])
@@ -35,9 +35,9 @@ if ~CcC.UserWrite
 end
 
 ChromatoTarget = matlab_cdf_open_function([strrep(pwd,'model_code',''),input_path,...
-    Target_chromatogram_file],Intthresholdbefore,driftMS);
+    Target_chromatogram_file],Intthreshold,driftMS);
 ChromatoRef = matlab_cdf_open_function([strrep(pwd,'model_code',''),input_path,...
-    Reference_chromatogram_file],Intthresholdbefore,driftMS);
+    Reference_chromatogram_file],Intthreshold,driftMS);
     
 MPeriod_target = NbPix2ndD_target/ChromatoTarget.SamRate;
 MPeriod_Ref = NbPix2ndD_Ref/ChromatoRef.SamRate;
@@ -83,6 +83,16 @@ else
         Target_alignment_pts_file]);
 end
 
+if strcmpi(units,'time')
+    % Store the positions in time units:
+    Target_peaks_time = Target_peaks;
+    Reference_peaks_time = Reference_peaks;
+    % COnvert them to pixel units:
+    Target_peaks = Time2Pix(Target_peaks, NbPix2ndD_target/ChromatoTarget.SamRate, ChromatoTarget.SamRate, ChromatoTarget.RTini);
+    Reference_peaks = Time2Pix(Reference_peaks, NbPix2ndD_Ref/ChromatoRef.SamRate, ChromatoRef.SamRate, ChromatoRef.RTini);
+    typical_peak_width = Time2Pix(typical_peak_width, NbPix2ndD_Ref/ChromatoRef.SamRate, ChromatoRef.SamRate, ChromatoRef.RTini);
+end
+
 % TIC is here used as the Reference/Target --> a first "normal" alignment
 % is done for the TIC (using the code normal code for non-MS data), and
 % some results are re-used to align all MS-ions
@@ -101,7 +111,7 @@ Target_TIC = reshape([ChromatoTarget.MStotint(1:(length(ChromatoTarget.MStotint)
     ChromatoTarget.MSintbox,Precision);
 
 tic
-[AlignedMSvaluebox,AlignedMSintbox,~,~,Aligned,Displacement,Deform_output] = Align2DChrom_MS_v5(Ref_TIC,Target_TIC,Reference_peaks,Target_peaks,ChromatoTarget.MSvaluebox,ChromatoTarget.MSintbox,NbPix2ndD_Ref,'Peak_widths',typical_peak_width);
+[AlignedMSvaluebox,AlignedMSintbox,~,~,Aligned,Displacement,Deform_output] = Align2DChrom_MS_v5(Ref_TIC,Target_TIC,Reference_peaks,Target_peaks,ChromatoTarget.MSvaluebox,ChromatoTarget.MSintbox,NbPix2ndD_Ref,'Peak_widths',typical_peak_width,'model_choice',model_choice);
 toc
 
 Alignedscannum = ChromatoTarget.scannum;
@@ -110,7 +120,7 @@ Alignedmedmsmax = ChromatoTarget.medmsmax;
 Alignedmedmsmin = ChromatoTarget.medmsmin;
 Alignedscantime = ChromatoTarget.scantime;
 
-clear ChromatoTarget
+%clear ChromatoTarget
 
 Mat=AlignedMSvaluebox';
 Mat2=AlignedMSintbox';
@@ -124,7 +134,7 @@ Vecti=Mat2(:);
 AlignedMSintboxLine = Vecti(Vect~=0);
 % MSintbox as vector without zeros, except one for each empty line:
 
-% Memeory is a limiting factor:
+% Memory is a limiting factor:
 clear Vect Vecti Mat Mat2
 
 Alignedeachscannum= sum(AlignedMSvaluebox~=0,2);
@@ -141,37 +151,64 @@ if plot_flag
     
     set(figure,'name','Total Ion Chromatograms (TICs)')
     subplot(3,1,1); 
-    plotChromato(Ref_TIC);
-    c_a_xis = caxis; title('\bfReference')
+    if ~strcmpi(units,'time')
+        plotChromato(Ref_TIC);
+        hold on
+        plot(Reference_peaks(:,1),Reference_peaks(:,2),'ok','linewidth',2)
+    else
+        plotChromato(Ref_TIC,'MP',NbPix2ndD_target/ChromatoTarget.SamRate,'SR',ChromatoTarget.SamRate,'acquisition_delay',ChromatoTarget.RTini*60);
+        hold on
+        plot(Reference_peaks_time(:,1),Reference_peaks_time(:,2),'ok','linewidth',2)
+    end
+    c_a_xis = caxis*2; caxis(c_a_xis); title('\bfReference')
     ylabel('')
     xlabel('')
-    hold on
-    plot(Reference_peaks(:,1),Reference_peaks(:,2),'ok','linewidth',2)
     
     subplot(3,1,2); 
-    plotChromato(Target_TIC); 
+    if ~strcmpi(units,'time')
+        plotChromato(Target_TIC);
+        hold on; 
+        plot(Target_peaks(:,1),Target_peaks(:,2),'ok','linewidth',2)
+    else
+        plotChromato(Target_TIC,'MP',NbPix2ndD_target/ChromatoTarget.SamRate,'SR',ChromatoTarget.SamRate,'acquisition_delay',ChromatoTarget.RTini*60);
+        hold on; 
+        plot(Target_peaks_time(:,1),Target_peaks_time(:,2),'ok','linewidth',2)
+    end
     caxis(c_a_xis); 
     title('\bfTarget'); 
     xlabel('')
-    hold on; 
-    plot(Target_peaks(:,1),Target_peaks(:,2),'ok','linewidth',2)
+    
     
     subplot(3,1,3); 
-    plotChromato(TIC_2Daligned);
-    c_a_xis = caxis; title('\bfAligned')
+    if ~strcmpi(units,'time')
+        plotChromato(TIC_2Daligned);
+        hold on
+        plot(Reference_peaks(:,1),Reference_peaks(:,2),'ok','linewidth',2)
+    else
+        plotChromato(TIC_2Daligned,'MP',NbPix2ndD_target/ChromatoTarget.SamRate,'SR',ChromatoTarget.SamRate,'acquisition_delay',ChromatoTarget.RTini*60);
+        hold on
+        plot(Reference_peaks_time(:,1),Reference_peaks_time(:,2),'ok','linewidth',2)
+    end
+    caxis(c_a_xis); title('\bfAligned')
     ylabel('')
-    hold on
-    plot(Reference_peaks(:,1),Reference_peaks(:,2),'ok','linewidth',2)
     
     set(figure,'name','Difference chromatograms')
     subplot(3,1,2); 
-    diffChromato(Ref_TIC,Target_TIC); 
+    if ~strcmpi(units,'time')
+        diffChromato(Ref_TIC,Target_TIC);
+    else
+        diffChromato(Ref_TIC,Target_TIC,'MP',NbPix2ndD_target/ChromatoTarget.SamRate,'SR',ChromatoTarget.SamRate,'acquisition_delay',ChromatoTarget.RTini*60);
+    end 
     c_a_xis = caxis; 
     title('\bfReference - Target'); 
     xlabel('');
     
-    subplot(3,1,3); 
-    diffChromato(Ref_TIC,TIC_2Daligned); 
+    subplot(3,1,3);  
+    if ~strcmpi(units,'time')
+        diffChromato(Ref_TIC,TIC_2Daligned);
+    else
+        diffChromato(Ref_TIC,TIC_2Daligned,'MP',NbPix2ndD_target/ChromatoTarget.SamRate,'SR',ChromatoTarget.SamRate,'acquisition_delay',ChromatoTarget.RTini*60);
+    end 
     caxis(c_a_xis); 
     title('\bfReference - Aligned'); 
     ylabel('')
@@ -188,7 +225,7 @@ end
 if save_flag
     dot_indices = strfind(Target_chromatogram_file,'.');
     Output_file_name = [strrep(pwd,'model_code',''),output_path,...
-        Target_chromatogram_file(1:dot_indices(end)-1),'_ALIGNED.csv'];
+        Target_chromatogram_file(1:dot_indices(end)-1),'_ALIGNED.cdf'];
     
     tic
     % Write cdf output file:

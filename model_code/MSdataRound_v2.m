@@ -5,6 +5,14 @@ tic
 
 % Roounds MS m/z data according to precision given in Precision (e.g.
 % 0.001). 
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
+% See license terms stated in LICENSE.txt
+% Authors : Jonas Gros, Yasuyuki Zushi, and J. Samuel Arey.
+%
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+%
 
  % Round m/z values:
   MSvalueboxII= round(MSvaluebox*(1/Precision))*Precision;
