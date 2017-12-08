@@ -12,3 +12,4 @@ aligning two-dimensional chromatograms”, Anal. Chem. 2012, vol 84, p 9033-9040
 <br><br> Author contacts:
 <br>Jonas Gros, gros.jonas@gmail.com
 <br>Yasuyuki Zushi, zushi.yasuyuki@aist.go.jp
+<br>J. Samuel Arey, arey@alum.mit.edu
